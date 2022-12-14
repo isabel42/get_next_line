@@ -27,7 +27,7 @@ char	*get_until_nl(char *s, int loopret)
 	return (temp);
 }
 
-char	*get_line(char *line, int ret, char *buf, int fd)
+char	*ft_get_line(char *line, int ret, char *buf, int fd)
 {
 	while (ft_totalloop(buf) == 0)
 	{
@@ -76,13 +76,13 @@ char	*get_next_line(int fd)
 	ret = read (fd, buf, BUFFER_SIZE);
 	if (ret <= 0)
 		return (NULL);
-	line = get_line(line, ret, buf, fd);
+	line = ft_get_line(line, ret, buf, fd);
 	line = ft_strjoin(line, get_until_nl(buf, 0));
 	looprep = 0;
 	return (line);
 }
-/*
 
+/*
 int	main(void)
 {
 	int		fd;
