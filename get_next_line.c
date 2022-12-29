@@ -91,10 +91,7 @@ char	*get_next_line(int fd)
 		looprep++;
 		return (get_until_nl (buf, looprep));
 	}
-	line = malloc(BUFFER_SIZE * sizeof(*line) + 1);
-	if (!line)
-		return (NULL);
-	line = ft_strjoin(line, get_until_nl(buf, looprep + 1));
+	line = get_until_nl(buf, looprep + 1);
 	ret = read (fd, buf, BUFFER_SIZE);
 	if (ret <= 0)
 		return (NULL);
@@ -103,8 +100,8 @@ char	*get_next_line(int fd)
 	looprep = 0;
 	return (line);
 }
-
 /*
+
 int	main(void)
 {
 	int		fd;
