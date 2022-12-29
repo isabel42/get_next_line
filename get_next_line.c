@@ -6,7 +6,7 @@
 /*   By: itovar-n <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/21 18:09:15 by itovar-n          #+#    #+#             */
-/*   Updated: 2022/12/21 18:15:16 by itovar-n         ###   ########.fr       */
+/*   Updated: 2022/12/28 15:55:10 by itovar-n         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,13 +41,21 @@ char	*get_until_nl(char *s, int loopret)
 
 char	*ft_get_line(char *line, int ret, char *buf, int fd)
 {
+	int i;
+
+	i = ret;
 	while (ft_totalloop(buf) == 0)
 	{
 		line = ft_strjoin(line, buf);
 		ret = read (fd, buf, BUFFER_SIZE);
 		buf[ret] = '\0';
 	}
-	buf[ret] = '\0';
+	buf[i] = '\0';
+	while( i < BUFFER_SIZE)
+	{
+		buf[i] = '\0';
+		i++;
+	}
 	return (line);
 }
 
@@ -75,17 +83,17 @@ char	*get_next_line(int fd)
 	char		*line;
 	static char	buf[BUFFER_SIZE];
 	static int	looprep = 0;
-	char		*temp;
 
-	line = malloc(BUFFER_SIZE * sizeof(*line) + 1);
-	if (fd < 0 || BUFFER_SIZE < 1 || !line)
+	if (fd < 0 || BUFFER_SIZE < 1)
 		return (NULL);
 	if (looprep < ft_totalloop(buf) - 1)
 	{
 		looprep++;
-		free (line);
 		return (get_until_nl (buf, looprep));
 	}
+	line = malloc(BUFFER_SIZE * sizeof(*line) + 1);
+	if (!line)
+		return (NULL);
 	line = ft_strjoin(line, get_until_nl(buf, looprep + 1));
 	ret = read (fd, buf, BUFFER_SIZE);
 	if (ret <= 0)
@@ -93,10 +101,7 @@ char	*get_next_line(int fd)
 	line = ft_get_line(line, ret, buf, fd);
 	line = ft_strjoin(line, get_until_nl(buf, 0));
 	looprep = 0;
-	temp = line;
-	if(line)
-		free (line);
-	return (temp);
+	return (line);
 }
 
 /*
@@ -124,5 +129,4 @@ int	main(void)
 		return (1);
 	}
 	return (0);
-}
-*/
+}*/
