@@ -46,22 +46,20 @@ char	*ft_strjoin(char *s1, char *s2)
 		sol[i] = s2[i - len_s1];
 		i++;
 	}
-	free(s1);
+	ft_free(s1);
 	sol [i] = '\0';
 	return (sol);
 }
 
-char	*ft_strchr(const char *s, int c)
+void	ft_free(char *s)
 {
-	char	c1;
-	char	*s1;
+	size_t	i;
 
-	c1 = (char)c;
-	s1 = (char *)s;
-	while (*s1 != '\0' && *s1 != c1)
-		s1++;
-	if (*s1 == c1)
-		return (s1);
-	else
-		return (NULL);
+	i = 0;
+	while (i < ft_strlen(s))
+	{
+		s[i] = '\0';
+		i++;
+	}
+	free(s);
 }

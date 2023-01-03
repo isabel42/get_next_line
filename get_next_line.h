@@ -23,7 +23,7 @@ char	*get_until_nl(char *s, int loopret);
 char	*ft_get_line(char *line, int ret, char *buf, int fd);
 int		ft_totalloop(char *buf);
 char	*get_next_line(int fd);
-char	*ft_strchr(const char *s, int c);
-int     get_size_until_nl(char *s, int loopret);
+void	ft_free(char *s);
+int		get_size_until_nl(char *s, int loopret);
 
 #endif
