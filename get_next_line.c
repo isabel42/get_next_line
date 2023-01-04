@@ -11,6 +11,9 @@
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+#include <unistd.h>
+#include <stdio.h>
+#include <string.h>
 
 char	*get_until_nl(char *s, int loopret)
 {
@@ -22,7 +25,7 @@ char	*get_until_nl(char *s, int loopret)
 	i = 0;
 	j = 0;
 	pos = 0;
-	temp = malloc((get_size_until_nl(s, loopret) + 1) * sizeof(*temp));
+	temp = ft_calloc((ft_strlen(s) + 1), sizeof(*temp));
 	if (!temp)
 		return (NULL);
 	while (s[i] != '\0' && pos <= loopret)
@@ -32,7 +35,7 @@ char	*get_until_nl(char *s, int loopret)
 			temp[j] = s[i];
 			j++;
 		}
-		if (s[i] == '\n')
+		if (s[i] == '\n' || s[i] == '\0')
 			pos++;
 		i++;
 	}
@@ -40,40 +43,26 @@ char	*get_until_nl(char *s, int loopret)
 	return (temp);
 }
 
-int	get_size_until_nl(char *s, int loopret)
-{
-	int		i;
-	int		j;
-	int		pos;
-
-	i = 0;
-	j = 0;
-	pos = 0;
-	while (s[i] != '\0' && pos <= loopret)
-	{
-		if (pos == loopret)
-			j++;
-		if (s[i] == '\n')
-			pos++;
-		i++;
-	}
-	return (j);
-}
-
 char	*ft_get_line(char *line, int ret, char *buf, int fd)
 {
+	char	*temp;
+
 	while (ft_totalloop(buf) == 0)
 	{
 		line = ft_strjoin(line, buf);
 		ret = read (fd, buf, BUFFER_SIZE);
 		if (ret < 0)
 		{
-			ft_free(line);
+			buf[0] = '\0';
+			free(line);
 			return (NULL);
 		}
 		buf[ret] = '\0';
 	}
 	buf[ret] = '\0';
+	temp = get_until_nl(buf, 0);
+	line = ft_strjoin(line, temp);
+	ft_free(temp);
 	return (line);
 }
 
@@ -108,24 +97,23 @@ char	*get_next_line(int fd)
 	if (looprep < ft_totalloop(buf) - 1)
 	{
 		looprep++;
-		return (get_until_nl (buf, looprep));
+		temp = get_until_nl(buf, looprep);
+		if (ft_strlen(temp) == 0)
+		{
+			ft_free(temp);
+			return (NULL);
+		}
+		return (temp);
 	}
 	line = get_until_nl(buf, looprep + 1);
 	ret = read (fd, buf, BUFFER_SIZE);
 	if (ret <= 0)
 	{
+		buf[0] = '\0';
 		ft_free(line);
 		return (NULL);
 	}
 	line = ft_get_line(line, ret, buf, fd);
-	if (!line)
-	{
-		ft_free(line);
-		return (NULL);
-	}
-	temp = get_until_nl(buf, 0);
-	line = ft_strjoin(line, temp);
-	ft_free(temp);
 	looprep = 0;
 	return (line);
 }
@@ -143,7 +131,7 @@ int	main(void)
 		printf("Error\n");
 		return (1);
 	}
-	while(i < 12)
+	while(i < 6)
 	{
 			line = get_next_line(fd);
 			printf("New Line: %s",  line);
